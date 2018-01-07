@@ -1,0 +1,309 @@
+```{r}
+plot_this('Hyōgo-ken Nishinomiya-shi Rokutanjichō')
+```
+```{r}
+plot_this('Tōkyō-to Koganei-shi Honchō')
+```
+```{r}
+plot_this('Fukuoka-ken Yame-shi Motomachi')
+```
+```{r}
+plot_this('Tōkyō-to Shibuya-ku Jingūmae')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Momochi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Hakata Ekimae')
+```
+```{r}
+plot_this('Tōkyō-to Meguro-ku Kamimeguro')
+```
+```{r}
+plot_this('Tōkyō-to Chiyoda-ku Kanda Jinbōchō')
+```
+```{r}
+plot_this('Niigata-ken Kashiwazaki-shi Chūōchō')
+```
+```{r}
+plot_this('Hiroshima-ken Hiroshima-shi Kokutaijimachi')
+```
+```{r}
+plot_this('Hokkaidō Asahikawa-shi 6 Jōdōri')
+```
+```{r}
+plot_this('Hokkaidō Abashiri-shi Minami 6 Jōhigashi')
+```
+```{r}
+plot_this('Tōkyō-to Taitō-ku Asakusa')
+```
+```{r}
+plot_this('Tōkyō-to Meguro-ku Takaban')
+```
+```{r}
+plot_this('Niigata-ken Nagaoka-shi Ōtedōri')
+```
+```{r}
+plot_this('Tōkyō-to Musashino-shi Kichijōji Honchō')
+```
+```{r}
+plot_this('Tōkyō-to Toshima-ku Sugamo')
+```
+```{r}
+plot_this('Tōkyō-to Minato-ku Shibakōen')
+```
+```{r}
+plot_this('Hokkaidō Katō-gun Motomachi')
+```
+```{r}
+plot_this('Shizuoka-ken Numazu-shi Miyukichō')
+```
+```{r}
+plot_this('Tōkyō-to Setagaya-ku Setagaya')
+```
+```{r}
+plot_this('Fukuoka-ken Kitakyūshū-shi Ōtemachi')
+```
+```{r}
+plot_this('Tōkyō-to Shinagawa-ku Hiromachi')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Nanbasennichimae')
+```
+```{r}
+plot_this('Hyōgo-ken Kōbe-shi Motomachidōri')
+```
+```{r}
+plot_this('Tōkyō-to Minato-ku Akasaka')
+```
+```{r}
+plot_this('Ōsaka-fu Sakai-shi Minamikawaramachi')
+```
+```{r}
+plot_this('Tōkyō-to Itabashi-ku Itabashi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Torikai')
+```
+```{r}
+plot_this('Ōsaka-fu Higashiōsaka-shi Aramotokita')
+```
+```{r}
+plot_this('Hyōgo-ken Amagasaki-shi Higashinanamatsuchō')
+```
+```{r}
+plot_this('Tōkyō-to Setagaya-ku Kitazawa')
+```
+```{r}
+plot_this('Tōkyō-to Kōtō-ku Tomioka')
+```
+```{r}
+plot_this('Tōkyō-to Kōtō-ku Kameido')
+```
+```{r}
+plot_this('Tōkyō-to Shibuya-ku Dōgenzaka')
+```
+```{r}
+plot_this('Tōkyō-to Taitō-ku Higashiueno')
+```
+```{r}
+plot_this('Tōkyō-to Adachi-ku Chūōhonchō')
+```
+```{r}
+plot_this('Shizuoka-ken Hamamatsu-shi Motoshirochō')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Ōhiraki')
+```
+```{r}
+plot_this('Tōkyō-to Chiyoda-ku Kudanminami')
+```
+```{r}
+plot_this('Hokkaidō Sapporo-shi Minami 3 Jōnishi')
+```
+```{r}
+plot_this('Tōkyō-to Shibuya-ku Higashi')
+```
+```{r}
+plot_this('Tōkyō-to Shinjuku-ku Nishishinjuku')
+```
+```{r}
+plot_this('Tōkyō-to Ōta-ku Kamiikedai')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Shiobaru')
+```
+```{r}
+plot_this('Tōkyō-to Nerima-ku Toyotamakita')
+```
+```{r}
+plot_this('Shizuoka-ken Shizuoka-shi Ōtemachi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Imaizumi')
+```
+```{r}
+plot_this('Tōkyō-to Toshima-ku Mejiro')
+```
+```{r}
+plot_this('Fukuoka-ken Itoshima-shi Maebarunishi')
+```
+```{r}
+plot_this('Tōkyō-to Edogawa-ku Chūō')
+```
+```{r}
+plot_this('Fukuoka-ken Kitakyūshū-shi Konyamachi')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Shinmachi')
+```
+```{r}
+plot_this('Tōkyō-to Shinjuku-ku Kabukichō')
+```
+```{r}
+plot_this('Hokkaidō Sapporo-shi Atsubetsuchūō 1 Jō')
+```
+```{r}
+plot_this('Tōkyō-to Setagaya-ku Sangenjaya')
+```
+```{r}
+plot_this('Niigata-ken Niigata-shi Gakkōchōdōri 1 Banchō')
+```
+```{r}
+plot_this('Hiroshima-ken Hiroshima-shi Nagarekawachō')
+```
+```{r}
+plot_this('Hyōgo-ken Himeji-shi Yasuda')
+```
+```{r}
+plot_this('Ōsaka-fu Neyagawa-shi Honmachi')
+```
+```{r}
+plot_this('Tōkyō-to Machida-shi Morino')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Nakanochō')
+```
+```{r}
+plot_this('Tōkyō-to Katsushika-ku Tateishi')
+```
+```{r}
+plot_this('Tōkyō-to Musashino-shi Midorichō')
+```
+```{r}
+plot_this('Tōkyō-to Nakano-ku Nakano')
+```
+```{r}
+plot_this('Miyagi-ken Sendai-shi Kamisugi')
+```
+```{r}
+plot_this('Tōkyō-to Tachikawa-shi Izumichō')
+```
+```{r}
+plot_this('Fukuoka-ken Kitakyūshū-shi None')
+```
+```{r}
+plot_this('Tōkyō-to Ōta-ku Kamata')
+```
+```{r}
+plot_this('Tōkyō-to Kōtō-ku Tōyō')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Tenjin')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Daimyō')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Ōgimachi')
+```
+```{r}
+plot_this('Hokkaidō Sapporo-shi Kotoni 2 Jō')
+```
+```{r}
+plot_this('Tōkyō-to Shibuya-ku Shibuya')
+```
+```{r}
+plot_this('Hyōgo-ken Kōbe-shi Kumoidōri')
+```
+```{r}
+plot_this('Tōkyō-to Toshima-ku Higashiikebukuro')
+```
+```{r}
+plot_this('Hokkaidō Sapporo-shi Kita 24 Jōnishi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Takatori')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Kyūtarōmachi')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Fuminosato')
+```
+```{r}
+plot_this('Tōkyō-to Minato-ku Roppongi')
+```
+```{r}
+plot_this('Tōkyō-to Meguro-ku Jiyūgaoka')
+```
+```{r}
+plot_this('Hyōgo-ken Kakogawa-shi Kakogawachō Kitazaike')
+```
+```{r}
+plot_this('Tōkyō-to Suginami-ku Asagayaminami')
+```
+```{r}
+plot_this('Hyōgo-ken Takarazuka-shi Tōyōchō')
+```
+```{r}
+plot_this('Tōkyō-to Chūō-ku Ginza')
+```
+```{r}
+plot_this('Tōkyō-to Fuchū-shi Miyanishichō')
+```
+```{r}
+plot_this('Tōkyō-to Chūō-ku Tsukiji')
+```
+```{r}
+plot_this('Tōkyō-to Bunkyō-ku Kasuga')
+```
+```{r}
+plot_this('Niigata-ken Niigata-shi Teraohigashi')
+```
+```{r}
+plot_this('Tōkyō-to Taitō-ku Kuramae')
+```
+```{r}
+plot_this('Tōkyō-to Setagaya-ku Okusawa')
+```
+```{r}
+plot_this('Hiroshima-ken Fukuyama-shi Higashisakuramachi')
+```
+```{r}
+plot_this('Hyōgo-ken Kōbe-shi Sumiyoshi Higashimachi')
+```
+```{r}
+plot_this('Tōkyō-to Kita-ku Ōjihonchō')
+```
+```{r}
+plot_this('Tōkyō-to Bunkyō-ku Sendagi')
+```
+```{r}
+plot_this('Tōkyō-to Toshima-ku Nishiikebukuro')
+```
+```{r}
+plot_this('Tōkyō-to Toshima-ku Minamiikebukuro')
+```
+```{r}
+plot_this('Ōsaka-fu Ōsaka-shi Kyōmachibori')
+```
+```{r}
+plot_this('air_area_name')
+```
+```{r}
+plot_this('Fukuoka-ken Kurume-shi Jōnanmachi')
+```
+```{r}
+plot_this('Tōkyō-to Shinagawa-ku Higashigotanda')
+```
