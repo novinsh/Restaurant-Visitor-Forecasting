@@ -1,0 +1,675 @@
+---
+title: "Air data exploration"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+
+
+```{r}
+store_inf <- read.csv('air_store_info.csv')
+reserve <- read.csv('air_reserve.csv')
+visit <- read.csv('air_visit_data.csv')
+conc <- read.csv('air_reserve_concatenated.csv')
+#visit_with_weekday <- read.csv('air_visit_with_weekday.csv') obsolete
+date_info <- read.csv('date_info.csv')
+air_reserve_incl_genre <- read.csv('air_reserve_incl_genre.csv')
+#air_reserve_incl_h <- read.csv('air_reserve_include_holidays.csv') obsolete
+visit_with_info <- read.csv('air_visit_with_info.csv')
+air_visit_sum <- read.csv('air_visit_sum.csv')
+#air_visit_with_month <- read.csv('air_visit_with_month.csv') obsolete
+air_visit_weekay_month_year <- read.csv('air_visit_weekay_month_year.csv')
+air_visit_numeric_vals <- read.csv('air_visit_numeric_vals.csv')
+air_reserve_numeric <- read.csv('air_reserve_numeric.csv')
+```
+
+
+```{r}
+head(air_reserve_numeric)
+```
+
+
+```{r}
+unique(visit_with_info$air_genre_name)
+```
+
+
+```{r}
+library(ggpubr)
+
+cor(visit_with_info$holiday, visit_with_info$visitors, method = c("pearson", "kendall", "spearman"))
+cor(air_visit_numeric_vals$weekday, air_visit_numeric_vals$visitors, method = c("pearson", "kendall", "spearman"))
+cor(air_visit_numeric_vals$air_genre_name, air_visit_numeric_vals$visitors, method = c("pearson", "kendall", "spearman"))
+cor(air_visit_numeric_vals$air_area_name, air_visit_numeric_vals$visitors, method = c("pearson", "kendall", "spearman"))
+cor(air_reserve_numeric$visit_hour, air_reserve_numeric$reserve_visitors, method = c("pearson", "kendall", "spearman"))
+```
+```{r}
+length(date_info[date_info$holiday_flg == 0,])
+```
+
+
+```{r}
+length(date_info[date_info$holiday_flg == 1,]$calendar_date)
+```
+
+
+Average number of visitors per reservation
+```{r}
+sum(reserve$reserve_visitors)/length(reserve$reserve_visitors)
+```
+Calculate the average number of visitors per reservation per genre of restaurant
+```{r}
+reserve_japanese <- air_reserve_incl_genre[air_reserve_incl_genre$air_genre_name == 'Japanese food',]
+sum(reserve_japanese$reserve_visitors)/length(reserve_japanese$reserve_visitors)
+```
+
+
+Create a plot of this for all restaurant genres:
+```{r}
+genres <- unique(air_reserve_incl_genre$air_genre_name)
+calc_avg_vis <- function(genre_name) {
+  reserve_genre <- air_reserve_incl_genre[air_reserve_incl_genre$air_genre_name == genre_name,]
+  #print(sum(reserve_genre$reserve_visitors))
+  avg_vis <- sum(reserve_genre$reserve_visitors)/length(reserve_genre$reserve_visitors)
+  return(avg_vis)
+}
+avg_visitors_per_reservation <- c()
+for (i in 1:length(genres)) {
+  avg_visitors_per_reservation[i] <- calc_avg_vis(genres[i])
+}
+avg_visitors_per_reservation_per_genre <- data.frame(genres, avg_visitors_per_reservation)
+```
+
+Export image
+```{r}
+png(filename = 'test.png', width=600, height=300)
+ggplot(avg_visitors_per_reservation_per_genre, aes(x=reorder(genres, avg_visitors_per_reservation), avg_visitors_per_reservation, color=genres)) + coord_flip() + geom_point() + theme(legend.position="none") + labs(x = '', y='Mean visitors per reservation')
+dev.off()
+```
+
+
+
+```{r}
+ggplot(air_reserve_incl_genre, aes(visit_datetime, reserve_visitors)) + geom_point(aes(colour = factor(air_genre_name)))
+```
+
+
+
+
+```{r}
+ggplot(air_reserve_incl_genre, aes(visit_datetime, reserve_visitors)) + geom_point(aes(colour = factor(visit_date_holiday)))
+```
+
+
+Plot the average number of visitors per area:
+```{r}
+areas <- unique(visit_with_info$air_area_name)
+calc_avg_vis_area <- function(area_name) {
+  visitors_area <- visit_with_info[visit_with_info$air_area_name == area_name,]
+  #print(sum(reserve_genre$reserve_visitors))
+  avg_vis <- sum(visitors_area$visitors)/length(visitors_area$visitors)
+  return(avg_vis)
+}
+avg_visitors_per_day_area <- c()
+for (i in 1:length(areas)) {
+  avg_visitors_per_day_area[i] <- calc_avg_vis_area(areas[i])
+}
+avg_visitors <- data.frame(areas, avg_visitors_per_day_area)
+```
+
+Export plot
+```{r}
+ggplot(avg_visitors, aes(x = reorder(areas, avg_visitors_per_day_area), avg_visitors_per_day_area)) + geom_point() + coord_flip() + labs(x = '', y='Mean visitors per day')
+ggsave(file='test.png', width=8, height=20, dpi=600)
+```
+
+
+
+
+Would also be interesting to see the average number of visitors per restaurant for each area:
+```{r}
+calc_avg_vis_rest_area <- function(area_name) {
+  visitors_area <- visit_with_info[visit_with_info$air_area_name == area_name,]
+  number_of_restaurants <- length(unique(visitors_area$air_store_id))
+  avg_vis <- sum(visitors_area$visitors)/length(visitors_area$visitors)
+  avg_vis_per_rest <- avg_vis/number_of_restaurants
+  return(avg_vis_per_rest)
+}
+
+calc_num_of_rest <- function(area_name) {
+  area <- visit_with_info[visit_with_info$air_area_name == area_name,]
+  number_of_restaurants <- length(unique(area$air_store_id))
+}
+
+number_of_rest <- c()
+avg_visitors_per_rest_area <- c()
+for (i in 1:length(areas)) {
+  avg_visitors_per_rest_area[i] <- calc_avg_vis_rest_area(areas[i])
+  number_of_rest[i] <- calc_num_of_rest(areas[i])
+}
+avg_visitors_per_rest <- data.frame(areas, avg_visitors_per_rest_area, number_of_rest)
+```
+Plot the average number of visitors per day per restaurant for each area
+```{r}
+ggplot(avg_visitors_per_rest, aes(x = reorder(areas, avg_visitors_per_rest_area), avg_visitors_per_rest_area)) + geom_point(aes(colour=number_of_rest)) + coord_flip() + labs(x = '', y='Mean visitors per day per restaurant')
+ggsave('air_mean_visitors_per_day_restaurant_area.png', width = 10, height = 20, dpi = 600)
+```
+
+
+
+
+Plot number of restaurants per area
+```{r}
+avg_v_ordered <- avg_visitors_per_rest[with(avg_visitors_per_rest, order(-number_of_rest)),]
+ggplot(head(avg_visitors_per_rest, 10), aes(x=reorder(areas,number_of_rest), number_of_rest, fill=areas)) + geom_bar(stat='identity') + coord_flip() + labs(x='', y='Number of restaurants') + theme(legend.position="none")
+#ggplot(avg_visitors_per_rest, aes(x=reorder(areas,number_of_rest), number_of_rest, fill=areas)) + geom_bar(stat='identity') + coord_flip() + labs(x='', y='Number of restaurants') + theme(legend.position="none") 
+ggsave('air_num_rest_per_area.png', width = 10, height = 8, dpi = 600)
+```
+Plot number of restaurants per genre
+```{r}
+get_num_of_restaurants <- function(genre_name) {
+  genre <-visit_with_info[visit_with_info$air_genre_name == genre_name,] 
+  num <- length(unique(genre$air_store_id))
+  return(num)
+}
+num_restaurants <- c()
+for(i in 1:length(genres)) {
+  num_restaurants[i] <- get_num_of_restaurants(genres[i])
+}
+
+restaurants_per_genre <- data.frame(genres, num_restaurants)
+
+ggplot(restaurants_per_genre, aes(x=reorder(genres,num_restaurants), num_restaurants, fill=genres)) + geom_bar(stat='identity') + coord_flip() + theme(legend.position="none", text = element_text(size=20)) + labs(x='', y='Number of restaurants')
+ggsave('number_of_rest_per_genre.png', width=8, height=4, dpi=600)
+```
+
+
+```{r}
+ggplot(date_info, aes(holiday_flg, fill=holiday_flg)) + geom_bar()
+ggsave('number_holidays.png', height = 4, width = 5, dpi=600)
+```
+
+
+
+```{r}
+ggplot(air_visit_weekay_month_year, aes(holiday, visitors)) + geom_bar(stat = "identity")
+```
+```{r}
+num_holidays <- length(date_info[date_info$holiday_flg == 1,])
+num_non_holidays <- length(date_info[date_info$holiday_flg == 0,])
+visitors_holidays <- air_visit_weekay_month_year[air_visit_weekay_month_year$holiday  == 1,]
+num_visitors_holidays <- sum(visitors_holidays$visitors)
+visitors_non_holidays <- air_visit_weekay_month_year[air_visit_weekay_month_year$holiday == 0,]
+num_visitors_non_holidays <- sum(visitors_non_holidays$visitors)
+a <- c(num_visitors_holidays, num_visitors_non_holidays)
+b <- c(1, 0)
+c <- data.frame(a, b)
+```
+
+
+
+```{r}
+air_visit_sum$weekday <- factor(air_visit_sum$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+ggplot(air_visit_sum, aes(date, visitors)) + geom_point(aes(colour=factor(holiday))) + facet_wrap(~weekday)
+ggsave('air_visitors_per_weekday.png', height=8, width=10, dpi = 600)
+```
+
+
+```{r}
+length(air_visit_sum$date)
+length(unique(air_visit_sum$date))
+```
+
+```{r}
+head(air_visit_sum)
+```
+
+
+
+```{r}
+ggplot(air_visit_sum, aes(date, visitors)) + geom_point(aes(colour=factor(holiday))) #+ scale_x_discrete(date, limits=c('2016-01-13', '2017-01-13'))
+ggsave('air_visitors_date.png', height = 6, width = 8)
+```
+
+
+```{r}
+head(air_visit_weekay_month_year)
+```
+
+
+```{r}
+air_visit_weekay_month_year$month <- factor(air_visit_weekay_month_year$month, levels = c('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'))
+air_visit_weekay_month_year_2016 <- air_visit_weekay_month_year[air_visit_weekay_month_year$year == 2016,]
+ggplot(air_visit_weekay_month_year_2016, aes(month, visitors, fill=month)) + geom_bar(stat="identity") + theme(legend.position="none") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave('air_visitors_2016.png', height = 4, width = 6, dpi = 600)
+```
+
+```{r}
+air_visit_weekay_month_year_2017 <- air_visit_weekay_month_year[air_visit_weekay_month_year$year == 2017,]
+ggplot(air_visit_weekay_month_year_2017, aes(month, visitors, fill=month)) + geom_bar(stat="identity") + theme(legend.position="none") + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave('air_visitors_2017.png', height = 4, width = 2.5, dpi = 600)
+```
+
+
+
+```{r}
+air_visit_weekay_month_year$weekday <- factor(air_visit_weekay_month_year$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+air_visit_weekay_month_year$month <- factor(air_visit_weekay_month_year$month, levels = c('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'))
+m <- ggplot(air_visit_weekay_month_year[air_visit_weekay_month_year$year == 2016,], aes(month, weekday))
+m + geom_raster(aes(fill = visitors)) + scale_fill_gradient(trans = 'log') + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave('heatmap_visitors_2016.png', height=6, width = 8, dpi=600)
+```
+
+```{r}
+p <- ggplot(air_visit_weekay_month_year[air_visit_weekay_month_year$year == 2017,], aes(month, weekday))
+p + geom_raster(aes(fill = visitors)) + scale_fill_gradient(trans = 'log') + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave('heatmap_visitors_2017.png', height=5, width = 4, dpi=600)
+```
+```{r}
+t <- ggplot(air_visit_weekay_month_year, aes(date, visitors))
+t + geom_line() 
+```
+```{r}
+t + geom_line() + geom_smooth(method = lm)
+```
+```{r}
+tmp <- aggregate(air_visit_weekay_month_year$visitors, by=list(Category=air_visit_weekay_month_year$date), FUN=sum)
+ggplot(tmp, aes(tmp$date, tmp$x)) + geom_point()
+```
+
+
+```{r}
+ggplot(conc, aes(conc$visit_date, conc$reserve_visitors)) + geom_point(aes(colour= factor(visit_date_holiday)))
+```
+
+```{r}
+air_visit_weekay_month_year$weekday <- factor(air_visit_weekay_month_year$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+ggplot(air_visit_weekay_month_year, aes(weekday, visitors, fill=weekday)) + geom_bar(stat="identity") + theme(legend.position="none")
+ggsave('visitors_per_weekday.png', height = 4, width = 6, dpi=600)
+```
+
+```{r}
+visit_with_info$weekday <- factor(visit_with_info$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+ggplot(visit_with_info, aes(weekday, visitors)) + geom_bar(stat="identity") + facet_wrap(~air_genre_name) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
+ggsave('absolute_number_visitors_per_genre.png', height = 6, width = 8, dpi= 600)
+```
+```{r}
+summary(visit_with_info$air_genre_name)
+```
+
+
+Let's take a closer look at each individually
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Asian",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Bar/Cocktail",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Cafe/Sweets",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Creative cuisine",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Dining bar",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "International cuisine",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Italian/French",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Izakaya",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Japanese food",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Karaoke/Party",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Other",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Western food",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Yakiniku/Korean food",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity")
+```
+
+
+```{r}
+ggplot(visit_with_info[visit_with_info$air_genre_name == "Okonomiyaki/Monja/Teppanyaki",], aes(weekday, visitors, fill=factor(holiday))) + geom_bar(stat="identity") + ggtitle("Okonomiyaki/Monja/Teppanyaki")
+```
+
+
+Now let's look at the different areas and wether they show different patterns for different day
+
+```{r}
+visit_with_info$weekday <- factor(visit_with_info$weekday, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+plot_this <- function(area_name) {
+  g <- ggplot(visit_with_info[visit_with_info$air_area_name == area_name,], aes(weekday, visitors, fill=factor(air_genre_name))) + geom_bar(stat="identity") + ggtitle(area_name)
+  return(g)
+}
+u <- unique(visit_with_info$air_area_name)
+#plot_this(u[1])
+```
+
+
+```{r}
+plot_this('T??ky??-to K??t??-ku Tomioka')
+```
+```{r}
+plot_this('Niigata-ken Niigata-shi Teraohigashi')
+```
+```{r}
+plot_this('Hy??go-ken Kakogawa-shi Kakogawach?? Kitazaike')
+```
+```{r}
+plot_this('Hy??go-ken Amagasaki-shi Higashinanamatsuch??')
+```
+```{r}
+plot_this('Hy??go-ken K??be-shi Sumiyoshi Higashimachi')
+```
+```{r}
+plot_this('??saka-fu Suita-shi Izumich??')
+```
+```{r}
+plot_this('T??ky??-to Setagaya-ku Okusawa')
+```
+```{r}
+plot_this('T??ky??-to Tait??-ku Higashiueno')
+```
+```{r}
+plot_this('Hiroshima-ken Hiroshima-shi Nagarekawach??')
+```
+```{r}
+plot_this('Hy??go-ken K??be-shi Motomachid??ri')
+```
+```{r}
+plot_this('Hokkaid?? Sapporo-shi Kotoni 2 J??')
+```
+```{r}
+plot_this('T??ky??-to Shibuya-ku Jing??mae')
+```
+```{r}
+plot_this('Shizuoka-ken Shizuoka-shi ??temachi')
+```
+```{r}
+plot_this('T??ky??-to Nakano-ku Nakano')
+```
+```{r}
+plot_this('T??ky??-to Shinagawa-ku Hiromachi')
+```
+```{r}
+plot_this('Hokkaid?? Asahikawa-shi 6 J??d??ri')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Nakanoch??')
+```
+```{r}
+plot_this('Hy??go-ken Nishinomiya-shi Rokutanjich??')
+```
+```{r}
+plot_this('T??ky??-to Minato-ku Roppongi')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi ??hiraki')
+```
+```{r}
+plot_this('T??ky??-to Tachikawa-shi Izumich??')
+```
+```{r}
+plot_this('Hokkaid?? Sapporo-shi Minami 3 J??nishi')
+```
+```{r}
+plot_this('T??ky??-to Meguro-ku Takaban')
+```
+```{r}
+plot_this('T??ky??-to Meguro-ku Kamimeguro')
+```
+```{r}
+plot_this('T??ky??-to Shinjuku-ku Nishishinjuku')
+```
+```{r}
+plot_this('T??ky??-to Bunky??-ku Kasuga')
+```
+```{r}
+plot_this('T??ky??-to Tait??-ku Kuramae')
+```
+```{r}
+plot_this('Hokkaid?? Sapporo-shi Kita 24 J??nishi')
+```
+```{r}
+plot_this('??saka-fu Higashi??saka-shi Aramotokita')
+```
+```{r}
+plot_this('Fukuoka-ken Kurume-shi J??nanmachi')
+```
+```{r}
+plot_this('T??ky??-to Tait??-ku Asakusa')
+```
+```{r}
+plot_this('T??ky??-to Shinjuku-ku Kabukich??')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Nanbasennichimae')
+```
+```{r}
+plot_this('T??ky??-to Itabashi-ku Itabashi')
+```
+```{r}
+plot_this('Niigata-ken Kashiwazaki-shi Ch????ch??')
+```
+```{r}
+plot_this('??saka-fu Sakai-shi Minamikawaramachi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Torikai')
+```
+```{r}
+plot_this('Miyagi-ken Sendai-shi Kamisugi')
+```
+```{r}
+plot_this('T??ky??-to Shinagawa-ku Higashigotanda')
+```
+```{r}
+plot_this('T??ky??-to Toshima-ku Mejiro')
+```
+```{r}
+plot_this('??saka-fu Neyagawa-shi Honmachi')
+```
+```{r}
+plot_this('Shizuoka-ken Numazu-shi Miyukich??')
+```
+```{r}
+plot_this('T??ky??-to Nerima-ku Toyotamakita')
+```
+```{r}
+plot_this('Fukuoka-ken Itoshima-shi Maebarunishi')
+```
+```{r}
+plot_this('T??ky??-to Machida-shi Morino')
+```
+```{r}
+plot_this('T??ky??-to Ch????-ku Ginza')
+```
+```{r}
+plot_this('T??ky??-to Meguro-ku Jiy??gaoka')
+```
+```{r}
+plot_this('T??ky??-to Minato-ku Akasaka')
+```
+```{r}
+plot_this('T??ky??-to Musashino-shi Kichij??ji Honch??')
+```
+```{r}
+plot_this('Hiroshima-ken Hiroshima-shi Kokutaijimachi')
+```
+```{r}
+plot_this('T??ky??-to ??ta-ku Kamiikedai')
+```
+```{r}
+plot_this('T??ky??-to Suginami-ku Asagayaminami')
+```
+```{r}
+plot_this('Niigata-ken Nagaoka-shi ??ted??ri')
+```
+```{r}
+plot_this('T??ky??-to Katsushika-ku Tateishi')
+```
+```{r}
+plot_this('T??ky??-to Chiyoda-ku Kanda Jinb??ch??')
+```
+```{r}
+plot_this('Fukuoka-ken Kitaky??sh??-shi ??temachi')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Ky??machibori')
+```
+```{r}
+plot_this('Hy??go-ken Takarazuka-shi T??y??ch??')
+```
+```{r}
+plot_this('T??ky??-to Setagaya-ku Setagaya')
+```
+```{r}
+plot_this('Hokkaid?? Sapporo-shi Atsubetsuch???? 1 J??')
+```
+```{r}
+plot_this('Hy??go-ken K??be-shi Kumoid??ri')
+```
+```{r}
+plot_this('T??ky??-to Shibuya-ku D??genzaka')
+```
+```{r}
+plot_this('T??ky??-to Toshima-ku Higashiikebukuro')
+```
+```{r}
+plot_this('T??ky??-to Minato-ku Shibak??en')
+```
+```{r}
+plot_this('T??ky??-to Toshima-ku Minamiikebukuro')
+```
+```{r}
+plot_this('T??ky??-to Musashino-shi Midorich??')
+```
+```{r}
+plot_this('Hokkaid?? Abashiri-shi Minami 6 J??higashi')
+```
+```{r}
+plot_this('Fukuoka-ken Kitaky??sh??-shi None')
+```
+```{r}
+plot_this('Hokkaid?? Kat??-gun Motomachi')
+```
+```{r}
+plot_this('T??ky??-to Koganei-shi Honch??')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Momochi')
+```
+```{r}
+plot_this('Hy??go-ken Himeji-shi Yasuda')
+```
+```{r}
+plot_this('T??ky??-to Shibuya-ku Higashi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Daimy??')
+```
+```{r}
+plot_this('T??ky??-to Fuch??-shi Miyanishich??')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Tenjin')
+```
+```{r}
+plot_this('T??ky??-to Kita-ku ??jihonch??')
+```
+```{r}
+plot_this('T??ky??-to Bunky??-ku Sendagi')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Shinmachi')
+```
+```{r}
+plot_this('Niigata-ken Niigata-shi Gakk??ch??d??ri 1 Banch??')
+```
+```{r}
+plot_this('Fukuoka-ken Yame-shi Motomachi')
+```
+```{r}
+plot_this('Shizuoka-ken Hamamatsu-shi Motoshiroch??')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Fuminosato')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Takatori')
+```
+```{r}
+plot_this('T??ky??-to Toshima-ku Nishiikebukuro')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi Ky??tar??machi')
+```
+```{r}
+plot_this('T??ky??-to Chiyoda-ku Kudanminami')
+```
+```{r}
+plot_this('Fukuoka-ken Kitaky??sh??-shi Konyamachi')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Shiobaru')
+```
+```{r}
+plot_this('??saka-fu ??saka-shi ??gimachi')
+```
+```{r}
+plot_this('T??ky??-to Ch????-ku Tsukiji')
+```
+```{r}
+plot_this('T??ky??-to Setagaya-ku Sangenjaya')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Imaizumi')
+```
+```{r}
+plot_this('T??ky??-to K??t??-ku T??y??')
+```
+```{r}
+plot_this('T??ky??-to K??t??-ku Kameido')
+```
+```{r}
+plot_this('T??ky??-to Setagaya-ku Kitazawa')
+```
+```{r}
+plot_this('Hiroshima-ken Fukuyama-shi Higashisakuramachi')
+```
+```{r}
+plot_this('T??ky??-to ??ta-ku Kamata')
+```
+```{r}
+plot_this('T??ky??-to Shibuya-ku Shibuya')
+```
+```{r}
+plot_this('Fukuoka-ken Fukuoka-shi Hakata Ekimae')
+```
+```{r}
+plot_this('T??ky??-to Toshima-ku Sugamo')
+```
+```{r}
+plot_this('T??ky??-to Edogawa-ku Ch????')
+```
+
+
+
+
