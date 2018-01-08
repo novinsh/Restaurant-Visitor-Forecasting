@@ -13,3 +13,7 @@ The project, ENVISION: Restaurant Visitor Forecasting, defined based on a [Kaggl
 
 * For the R implementations you'll need R interpreter (you can open up the R project using R studio)
 * The forecasting implemented in Python 3.6 using Pandas, Scikit-learn, and Keras libraries.
+
+### Other Materials of the project
+
+* [Homework 11](https://docs.google.com/document/d/1k8g6rhK4-n8T8TGpNQMLDt0kXuSqRGfk8lUOzslDcG0/edit?usp=sharing) related to the project
