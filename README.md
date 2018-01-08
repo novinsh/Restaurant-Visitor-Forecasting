@@ -16,5 +16,5 @@ The project, ENVISION: Restaurant Visitor Forecasting, defined based on a [Kaggl
 
 ### Other Materials of the project
 
-* [Homework 11](https://docs.google.com/document/d/1k8g6rhK4-n8T8TGpNQMLDt0kXuSqRGfk8lUOzslDcG0/edit?usp=sharing) related to the project
-[ ] Our Kernel on Kaggle (not yet published)
+- [Homework 11](https://docs.google.com/document/d/1k8g6rhK4-n8T8TGpNQMLDt0kXuSqRGfk8lUOzslDcG0/edit?usp=sharing) related to the project
+- [ ] Our Kernel on Kaggle (not yet published)
