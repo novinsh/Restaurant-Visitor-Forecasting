@@ -264,7 +264,7 @@ fig.suptitle('input features for store: %s' % store_to_filter)
 
 for i, col in enumerate(col_to_plot):
     # ttt = pd.Series(data[:,i], index=data[:,1]) # TODO
-    plt.subplot(len(col_to_plot), 1, i+1)
+    ax = plt.subplot(len(col_to_plot), 1, i+1)
     if col == 'visitors':
         t1 = list(range(0, data.shape[0]))
         this_store_2 = this_store[-len(visitors):]
@@ -273,11 +273,15 @@ for i, col in enumerate(col_to_plot):
         t2 = list(range(data.shape[0]-len(pred_for_this_store), data.shape[0]))
         print(t1)
         print(t2)
-        plt.plot(t1, data[:, i], t2, pred_for_this_store)
+        # plt.plot(t1, data[:, i], t2, pred_for_this_store)
+        ax.plot(t1, data[:,i], label='original')
+        ax.plot(t2, pred_for_this_store, label='prediction')
     else:
         plt.plot(data[:, i])
     # ttt.plot()
+    plt.legend(loc='upper left')
     plt.title(col, y=0.5, loc='right')
+
 plt.xlabel('Time step')
 plt.show()
 # --------------- end of the plot from top -------------------- #
